@@ -25,7 +25,7 @@ class UserController extends Controller
         $data = $request->all();
 
         if(!$request->has('password') || !$request->get('password')) {
-            return response()->json(['data' => 'User requires a passoword'], 400);
+            return response()->json(['error' => 'User requires a passoword'], 400);
         }
 
         try {
@@ -36,7 +36,7 @@ class UserController extends Controller
             return response()->json(['data' => $user], 201);
 
         } catch(\Exception $e) {
-            return response()->json(['data' => $e->getMessage()], 400);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 
@@ -48,7 +48,7 @@ class UserController extends Controller
             return response()->json(['data' => $user], 200);
 
         } catch(\Exception $e) {
-            return response()->json(['data' => $e->getMessage()], 404);
+            return response()->json(['error' => $e->getMessage()], 404);
         }
     }
 
@@ -57,7 +57,7 @@ class UserController extends Controller
         $data = $request->all();
 
         if(!$request->has('password') || !$request->get('password')) {
-            return response()->json(['data' => 'User requires a passoword'], 400);
+            return response()->json(['error' => 'User requires a passoword'], 400);
         } else {
             unset($data['password']);
         }
@@ -70,7 +70,7 @@ class UserController extends Controller
             return response()->json(['data' => $user], 202);
 
         } catch(\Exception $e) {
-            return response()->json(['data' => $e->getMessage()], 400);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 
@@ -84,7 +84,7 @@ class UserController extends Controller
             return response()->json(['data' => 'deleted'], 200);
 
         } catch(\Exception $e) {
-            return response()->json(['Error' => $e->getMessage()], 400);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 }
