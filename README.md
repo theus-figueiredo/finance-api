@@ -35,7 +35,7 @@ vendor/bin/sail up -d
 - Executar as migrations:
 
 ```bash
-vendor/bin/sail exec laravel.test php artisan migrate
+vendor/bin/sail exec app php artisan migrate
 ```
 
 ## Variáveis de ambiente
