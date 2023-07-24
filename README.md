@@ -15,9 +15,15 @@ Para executar o projeto é preciso adicionar algumas variais de ambiente:
 
 `FORWARD_DB_PORT` -> irá definir a porta local para qual será mapeado o container com o mysql
 
-`JWT_SECRET` -> para fazer uso das funções do JWT ```vendor/bin/sail exec app php artisan jwt secret```
+`JWT_SECRET` -> para fazer uso das funções do JWT 
+```bash
+vendor/bin/sail exec app php artisan jwt secret
+```
 
-`APP_KEY` -> para armazenar a chave de criptografia usada para proteger os dados sensíveis do aplicativo ```vendor/bin/sail exec app php artisan key:generate```
+`APP_KEY` -> para armazenar a chave de criptografia usada para proteger os dados sensíveis do aplicativo 
+```bash
+vendor/bin/sail exec app php artisan key:generate
+```
 
 
 o username e senha do mysql no container em questão são respectivamente `sail` e `password`
