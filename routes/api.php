@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Auth\JwtController;
+use App\Http\Controllers\ExpenseCategoryController;
+use App\Http\Controllers\IncomeCategoryController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -32,5 +34,23 @@ Route::name('app')->namespace('App\Http\Controllers')->group(function() {
         Route::post('/login', [JwtController::class, 'login']);
         Route::get('/refresh-session', [JwtController::class, 'refresh']);
         Route::get('/logout', [UserController::class, 'logout']);
+    });
+
+
+    Route::prefix('/expense-category')->group(function() {
+        Route::get('/', [ExpenseCategoryController::class, 'index']);
+        Route::get('/{id}', [ExpenseCategoryController::class, 'show']);
+        Route::post('/', [ExpenseCategoryController::class, 'create']);
+        Route::put('/{id}', [ExpenseCategoryController::class, 'update']);
+        Route::delete('/{id}', [ExpenseCategoryController::class, 'destroy']);
+    });
+
+
+    Route::prefix('income-category')->group(function() {
+        Route::get('/', [IncomeCategoryController::class, 'index']);
+        Route::get('/{id}', [IncomeCategoryController::class, 'show']);
+        Route::post('/', [IncomeCategoryController::class, 'create']);
+        Route::put('/{id}', [IncomeCategoryController::class, 'update']);
+        Route::delete('/{id}', [IncomeCategoryController::class, 'destroy']);
     });
 });

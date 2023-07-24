@@ -2,47 +2,82 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\IncomeCategory;
 use Illuminate\Http\Request;
 
 class IncomeCategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
+
+    private $incomeCategory;
+
+    public function __construct(IncomeCategory $incomeCategory) {
+        $this->incomeCategory = $incomeCategory;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+    public function index() {
+        $categories = $this->incomeCategory->paginate('10');
+
+        return response()->json(['data' => $categories], 200);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+
+    public function store(Request $request) {
+        $data = $request->all();
+
+        try {
+
+            $category = $this->incomeCategory->create($data);
+
+            return response()->json(['data' => $category], 201);
+
+        } catch (\Exception $e) {
+            return response()->json(['Error' => $e->getMessage()], 400);
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
+
+    public function show(string $id) {
+        try {
+
+            $category = $this->incomeCategory->findOrFail($id);
+
+            return response()->json(['data' => $category], 200);
+        
+        } catch (\Exception $e) {
+            return response()->json(['Error' => $e->getMessage()], 400);
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+
+    public function update(Request $request, string $id) {
+        
+        $data = $request->all();
+
+        try {
+
+            $category = $this->incomeCategory->findOrFail($id);
+
+            $category->update($data);
+
+            return response()->json(['data' => $category], 202);
+
+        } catch (\Exception $e) {
+            return response()->json(['Error' => $e->getMessage()], 400);
+        }
+    }
+
+
+    public function destroy(string $id) {
+        
+        try {
+            $category = $this->incomeCategory->findOrFail($id);
+
+            $category->delete();
+
+            return response()->json(['data' => 'deleted'], 200);
+
+        } catch (\Exception $e) {
+            return response()->json(['Error' => $e->getMessage()], 400);
+        }
     }
 }
