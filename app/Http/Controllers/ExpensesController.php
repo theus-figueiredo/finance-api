@@ -2,47 +2,81 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Expenses;
 use Illuminate\Http\Request;
 
 class ExpensesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
+
+    private $expense;
+
+    public function __construct(Expenses $expense) {
+        $this->expense = $expense;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+
+    public function index() {
+        $expenses = $this->expense->paginate('10');
+
+        return response()->json(['data' => $expenses], 200);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+
+    public function store(Request $request) {
+
+        $data = $request->all();
+
+        try {
+
+            $expense = $this->expense->create($data);
+
+            return response()->json(['data' => $expense], 201);
+
+        } catch (\Exception $e) {
+            return response()->json(['Error' => $e->getMessage()], 400);
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
+
+    public function show(string $id) {
+        try {
+
+            $expense = $this->expense->findOrFail($id);
+
+            return response()->json(['data' => $expense], 200);
+
+        } catch (\Exception $e) {
+            return response()->json(['Error' => $e->getMessage()], 400);
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+ 
+    public function update(Request $request, string $id) {
+        $data = $request->all();
+
+        try {
+
+            $expense = $this->expense->findOrFail($id);
+            $expense->update($data);
+
+            return response()->json(['data' => $expense], 202);
+
+        } catch (\Exception $e) {
+            return response()->json(['Error' => $e->getMessage()], 400);
+        }
+    }
+
+
+    public function destroy(string $id) {
+        try {
+
+            $expense = $this->expense->findOrFail($id);
+            $expense->delete();
+
+            return response()->json(['data' => 'deleted'], 202);
+
+        } catch (\Exception $e) {
+            return response()->json(['Error' => $e->getMessage()], 400);
+        }
     }
 }
