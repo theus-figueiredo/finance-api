@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\JwtController;
 use App\Http\Controllers\ExpenseCategoryController;
 use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\IncomeCategoryController;
+use App\Http\Controllers\IncomesController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -62,5 +63,14 @@ Route::name('app')->namespace('App\Http\Controllers')->group(function() {
         Route::post('/', [ExpensesController::class, 'create']);
         Route::put('/{id}', [ExpensesController::class, 'update']);
         Route::delete('/{id}', [ExpensesController::class, 'destroy']);
+    });
+
+    
+    Route::prefix('/incomes')->group(function() {
+        Route::get('/', [IncomesController::class, 'index']);
+        Route::get('/{id}', [IncomesController::class, 'show']);
+        Route::post('/', [IncomesController::class, 'create']);
+        Route::put('/{id}', [IncomesController::class, 'update']);
+        Route::delete('/{id}', [IncomesController::class, 'destroy']);
     });
 });
