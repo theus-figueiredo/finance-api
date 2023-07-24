@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('expense_category', function (Blueprint $table) {
             $table->id();
             $table->string('category');
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

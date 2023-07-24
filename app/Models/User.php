@@ -45,14 +45,20 @@ class User extends Authenticatable implements JWTSubject
         'password' => 'hashed',
     ];
 
-    public function incomes()
-    {
+    public function incomes() {
         return $this->hasMany(Incomes::class);
     }
 
-    public function expenses()
-    {
+    public function expenses() {
         return $this->hasMany(Expenses::class);
+    }
+
+    public function incomeCategory() {
+        return $this->hasMany(IncomeCategory::class);
+    }
+
+    public function expenseCategory() {
+        return $this->hasMany(IncomeCategory::class);
     }
 
     public function getJWTIdentifier() {

@@ -9,9 +9,13 @@ class IncomeCategory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['category'];
+    protected $fillable = ['category', 'user_id'];
 
     public function incomes() {
         return $this->belongsToMany(Incomes::class);
+    }
+
+    public function user() {
+        return $this->belongsTo(User::class);
     }
 }
