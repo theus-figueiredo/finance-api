@@ -57,7 +57,7 @@ Route::name('app')->namespace('App\Http\Controllers')->group(function() {
     });
 
 
-    Route::prefix('/expenses')->group(function() {
+    Route::prefix('/expenses')->middleware('jwt.auth')->group(function() {
         Route::get('/', [ExpensesController::class, 'index']);
         Route::get('/{id}', [ExpensesController::class, 'show']);
         Route::post('/', [ExpensesController::class, 'store']);

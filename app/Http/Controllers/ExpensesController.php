@@ -16,8 +16,7 @@ class ExpensesController extends Controller
 
 
     public function index() {
-        $expenses = $this->expense->paginate('10');
-
+        $expenses = auth('api')->user()->expenses()->paginate('10');
         return response()->json(['data' => $expenses], 200);
     }
 
@@ -28,6 +27,7 @@ class ExpensesController extends Controller
 
         try {
 
+            $data['user_id'] = auth('api')->user()->id;
             $expense = $this->expense->create($data);
 
             return response()->json(['data' => $expense], 201);
@@ -41,9 +41,12 @@ class ExpensesController extends Controller
     public function show(string $id) {
         try {
 
+            $user_id = auth('api')->user()->id;
             $expense = $this->expense->findOrFail($id);
 
-            return response()->json(['data' => $expense], 200);
+            if($user_id == $expense['user_id']) return response()->json(['data' => $expense], 200);
+
+            return response()->json(['data' => 'Unauthorized'], 401);
 
         } catch (\Exception $e) {
             return response()->json(['Error' => $e->getMessage()], 400);
@@ -52,14 +55,20 @@ class ExpensesController extends Controller
 
  
     public function update(Request $request, string $id) {
+    
         $data = $request->all();
 
         try {
 
             $expense = $this->expense->findOrFail($id);
-            $expense->update($data);
+            $user_id = auth('api')->user()->id;
 
-            return response()->json(['data' => $expense], 202);
+            if($user_id == $expense['user_id']) {
+                $expense->update($data);
+                return response()->json(['data' => $expense], 202);
+            }
+
+            return response()->json(['data' => 'Unauthorized'], 401);
 
         } catch (\Exception $e) {
             return response()->json(['Error' => $e->getMessage()], 400);
@@ -71,9 +80,14 @@ class ExpensesController extends Controller
         try {
 
             $expense = $this->expense->findOrFail($id);
-            $expense->delete();
+            $user_id = auth('api')->user()->id;
 
-            return response()->json(['data' => 'deleted'], 202);
+            if($user_id == $expense['user_id']) {
+                $expense->delete();
+                return response()->json(['data' => 'deleted'], 202);
+            }
+
+            return response()->json(['data' => 'Unauthorized'], 401);
 
         } catch (\Exception $e) {
             return response()->json(['Error' => $e->getMessage()], 400);
