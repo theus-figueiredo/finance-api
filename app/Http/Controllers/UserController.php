@@ -43,9 +43,13 @@ class UserController extends Controller
 
     public function show(string $id) {
         try {
+
+            $user_id = auth('api')->user()->id;
             $user = $this->user->findOrFail($id);
 
-            return response()->json(['data' => $user], 200);
+            if ($user_id == $user['id']) return response()->json(['data' => $user], 200);
+
+            return response()->json(['data' => 'Unauthorized'], 401);
 
         } catch(\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 404);
@@ -56,19 +60,24 @@ class UserController extends Controller
     public function update(Request $request, string $id) {
         $data = $request->all();
 
-        if(!$request->has('password') || !$request->get('password')) {
-            return response()->json(['error' => 'User requires a passoword'], 400);
+        if($request->has('password') || $request->get('password')) {
+            $data['password'] = bcrypt($data['password']);
         } else {
             unset($data['password']);
         }
 
         try {
+
+            $user_id = auth('api')->user()->id;
             $user = $this->user->findOrFail($id);
 
-            $user->update($data);
+            if($user_id == $user['id']) {
+                $user->update($data);
+                return response()->json(['data' => $user], 202);
+            }
 
-            return response()->json(['data' => $user], 202);
-
+            return response()->json(['data' => 'Unauthorized'], 401);
+            
         } catch(\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
@@ -77,11 +86,16 @@ class UserController extends Controller
 
     public function destroy(string $id) {
         try {
+
+            $user_id = auth('api')->user()->id;
             $user = $this->user->findOrFail($id);
 
-            $user->delete();
+            if ($user_id == $user['id']) {
+                $user->delete();
+                return response()->json(['data' => 'deleted'], 200);
+            }
 
-            return response()->json(['data' => 'deleted'], 200);
+            return response()->json(['data' => 'Unauthorized'], 401);            
 
         } catch(\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
