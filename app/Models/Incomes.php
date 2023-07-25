@@ -22,6 +22,6 @@ class Incomes extends Model
     }
 
     public function incomeCategory() {
-        return $this->belongsToMany(IncomeCategory::class, 'income_category');
+        return $this->belongsToMany(IncomeCategory::class);
     }
 }

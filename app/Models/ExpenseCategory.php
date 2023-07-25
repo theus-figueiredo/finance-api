@@ -14,7 +14,7 @@ class ExpenseCategory extends Model
 
 
     public function expenses() {
-        return $this->belongsToMany(Expenses::class, 'expense_category');
+        return $this->belongsToMany(Expenses::class);
     }
 
     public function user() {

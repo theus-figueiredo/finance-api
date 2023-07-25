@@ -13,7 +13,7 @@ class IncomeCategory extends Model
     protected $table = 'income_category';
 
     public function incomes() {
-        return $this->belongsToMany(Incomes::class, 'income_category');
+        return $this->belongsToMany(Incomes::class);
     }
 
     public function user() {

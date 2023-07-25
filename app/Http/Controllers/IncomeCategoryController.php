@@ -15,8 +15,7 @@ class IncomeCategoryController extends Controller
     }
 
     public function index() {
-        $categories = $this->incomeCategory->paginate('10');
-
+        $categories = auth('api')->user()->incomeCategory()->paginate('10');
         return response()->json(['data' => $categories], 200);
     }
 
@@ -26,6 +25,7 @@ class IncomeCategoryController extends Controller
 
         try {
 
+            $data['user_id'] = auth('api')->user()->id;
             $category = $this->incomeCategory->create($data);
 
             return response()->json(['data' => $category], 201);
@@ -40,8 +40,11 @@ class IncomeCategoryController extends Controller
         try {
 
             $category = $this->incomeCategory->findOrFail($id);
+            $user_id = auth('api')->user()->id;
 
-            return response()->json(['data' => $category], 200);
+            if($user_id == $category['user_id']) return response()->json(['data' => $category], 200);
+
+            return response()->json(['data' => 'Unauthorized'], 401);
         
         } catch (\Exception $e) {
             return response()->json(['Error' => $e->getMessage()], 400);
@@ -56,10 +59,14 @@ class IncomeCategoryController extends Controller
         try {
 
             $category = $this->incomeCategory->findOrFail($id);
+            $user_id = auth('api')->user()->id;
 
-            $category->update($data);
-
-            return response()->json(['data' => $category], 202);
+            if($user_id == $category['user_id']) {
+                $category->update($data);
+                return response()->json(['data' => $category], 202);
+            }
+            
+            return response()->json(['data' => 'Unauthorized'], 401);
 
         } catch (\Exception $e) {
             return response()->json(['Error' => $e->getMessage()], 400);
@@ -68,13 +75,17 @@ class IncomeCategoryController extends Controller
 
 
     public function destroy(string $id) {
-        
         try {
+
             $category = $this->incomeCategory->findOrFail($id);
+            $user_id = auth('api')->user()->id;
 
-            $category->delete();
+            if($user_id == $category['user_id']) {
+                $category->delete();
+                return response()->json(['data' => 'deleted'], 200);
+            }
 
-            return response()->json(['data' => 'deleted'], 200);
+            return response()->json(['data' => 'Unauthorized'], 401);
 
         } catch (\Exception $e) {
             return response()->json(['Error' => $e->getMessage()], 400);

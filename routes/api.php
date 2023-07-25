@@ -48,7 +48,7 @@ Route::name('app')->namespace('App\Http\Controllers')->group(function() {
     });
 
 
-    Route::prefix('income-category')->group(function() {
+    Route::prefix('income-category')->middleware('jwt.auth')->group(function() {
         Route::get('/', [IncomeCategoryController::class, 'index']);
         Route::get('/{id}', [IncomeCategoryController::class, 'show']);
         Route::post('/', [IncomeCategoryController::class, 'store']);
