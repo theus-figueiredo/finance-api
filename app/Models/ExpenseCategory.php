@@ -10,11 +10,12 @@ class ExpenseCategory extends Model
 {
     use HasFactory;
     
+    protected $table= 'expense_category';
     protected $fillable = ['category', 'user_id'];
 
 
     public function expenses() {
-        return $this->belongsToMany(Expenses::class);
+        return $this->belongsToMany(Expenses::class, 'expense_category');
     }
 
     public function user() {

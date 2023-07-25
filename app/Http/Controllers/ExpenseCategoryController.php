@@ -34,7 +34,7 @@ class ExpenseCategoryController extends Controller
             return response()->json(['data' => $expenseCategory], 201);
 
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+            return response()->json(['Error' => $e->getMessage()], 400);
         }
     }
 

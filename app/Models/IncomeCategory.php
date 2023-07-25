@@ -10,9 +10,10 @@ class IncomeCategory extends Model
     use HasFactory;
 
     protected $fillable = ['category', 'user_id'];
+    protected $table = 'income_category';
 
     public function incomes() {
-        return $this->belongsToMany(Incomes::class);
+        return $this->belongsToMany(Incomes::class, 'income_category');
     }
 
     public function user() {

@@ -54,11 +54,11 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function incomeCategory() {
-        return $this->hasMany(IncomeCategory::class);
+        return $this->hasMany(IncomeCategory::class, 'income_category');
     }
 
     public function expenseCategory() {
-        return $this->hasMany(IncomeCategory::class);
+        return $this->hasMany(IncomeCategory::class, 'expense_category');
     }
 
     public function getJWTIdentifier() {
