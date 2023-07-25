@@ -66,7 +66,7 @@ Route::name('app')->namespace('App\Http\Controllers')->group(function() {
     });
 
     
-    Route::prefix('/incomes')->group(function() {
+    Route::prefix('/incomes')->middleware('jwt.auth')->group(function() {
         Route::get('/', [IncomesController::class, 'index']);
         Route::get('/{id}', [IncomesController::class, 'show']);
         Route::post('/', [IncomesController::class, 'store']);

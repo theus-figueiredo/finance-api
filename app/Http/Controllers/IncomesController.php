@@ -17,7 +17,7 @@ class IncomesController extends Controller
 
 
     public function index() {
-        $incomes = $this->income->paginate('10');
+        $incomes = auth('api')->user()->incomes()->paginate('10');
 
         return response()->json(['data' => $incomes], 200);
     }
@@ -29,6 +29,7 @@ class IncomesController extends Controller
 
         try {
 
+            $data['user_id'] = auth()->user()->id;
             $income = $this->income->create($data);
 
             return response()->json(['data' => $income], 201);
@@ -43,11 +44,14 @@ class IncomesController extends Controller
         try {
 
             $income = $this->income->findOrFail($id);
+            $user_id = auth('api')->user()->id;
 
-            return response()->json(['data' => $income], 200);
+            if($user_id == $income['user_id']) return response()->json(['data' => $income], 200);
+
+            return response()->json(['error' => 'Unauthorized'], 401);
 
         } catch (\Exception $e) {
-            return response()->json(['Error' => $e->getMessage()], 400);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 
@@ -59,9 +63,14 @@ class IncomesController extends Controller
         try {
 
             $income = $this->income->findOrFail($id);
-            $income->update($data);
+            $user_id = auth('api')->user()->id;
 
-            return response()->json(['data' => $income], 202);
+            if($user_id == $income['user_id']) {
+                $income->update($data);
+                return response()->json(['data' => $income], 202);
+            }
+
+            return response()->json(['error' =>  'Unauthorized'], 401);
 
         } catch (\Exception $e) {
             return response()->json(['Error' => $e->getMessage()], 400);
@@ -73,9 +82,14 @@ class IncomesController extends Controller
         try {
 
             $income = $this->income->findOrFail($id);
-            $income->delete();
+            $user_id = auth('api')->user()->id;
 
-            return response()->json(['data' => 'deleted'], 202);
+            if($user_id == $income['user_id']) {
+                $income->delete();
+                return response()->json(['data' => 'deleted'], 202);
+            }
+
+            return response()->json(['error' =>  'Unauthorized'], 401);
 
         } catch (\Exception $e) {
             return response()->json(['Error' => $e->getMessage()], 400);
