@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Expenses;
 use Illuminate\Http\Request;
+use DateTime;
+use DateTimeZone;
 
 class ExpensesController extends Controller
 {
 
     private $expense;
+    private $timezone = new DateTimeZone('America/Sao_Paulo');
+
 
     public function __construct(Expenses $expense) {
         $this->expense = $expense;
@@ -24,6 +28,12 @@ class ExpensesController extends Controller
     public function store(Request $request) {
 
         $data = $request->all();
+
+        if(!$request->has('date') || !$request->get('date')) {
+            $data['date'] = new DateTime(null, $this->timezone);
+        } else {
+            $data['date'] = new DateTime($data['date'], $this->timezone);
+        }
 
         try {
 
@@ -57,6 +67,12 @@ class ExpensesController extends Controller
     public function update(Request $request, string $id) {
     
         $data = $request->all();
+
+        if (!$request->has('date') || $request->get('date')) {
+            $data['date'] = new DateTime($data['date'], $this->timezone);
+        } else {
+            unset($data['date']);
+        }
 
         try {
 

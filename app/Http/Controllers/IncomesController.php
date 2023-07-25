@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Incomes;
 use Illuminate\Http\Request;
+use DateTime;
+use DateTimeZone;
 
 class IncomesController extends Controller
 {
 
     private $income;
-
+    private $timezone = new DateTimeZone('America/Sao_Paulo');
 
     public function __construct(Incomes $income) {
         $this->income = $income;
@@ -26,6 +28,12 @@ class IncomesController extends Controller
     public function store(Request $request) {
         
         $data = $request->all();
+
+        if(!$request->has('date') || !$request->get('date')) {
+            $data['date'] = new DateTime(null, $this->timezone);
+        } else {
+            $data['date'] = new DateTime($data['date'], $this->timezone);
+        }
 
         try {
 
