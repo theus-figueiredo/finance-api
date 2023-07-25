@@ -39,7 +39,7 @@ Route::name('app')->namespace('App\Http\Controllers')->group(function() {
     });
 
 
-    Route::prefix('/expense-category')->group(function() {
+    Route::prefix('/expense-category')->middleware('jwt.auth')->group(function() {
         Route::get('/', [ExpenseCategoryController::class, 'index']);
         Route::get('/{id}', [ExpenseCategoryController::class, 'show']);
         Route::post('/', [ExpenseCategoryController::class, 'store']);

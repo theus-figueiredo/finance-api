@@ -10,24 +10,22 @@ class ExpenseCategoryController extends Controller
 
     private $expenseCategory;
 
-    public function __construct(ExpenseCategory $expenseCategory)
-    {
+    public function __construct(ExpenseCategory $expenseCategory) {
         $this->expenseCategory = $expenseCategory;
     }
 
-    public function index()
-    {
-        $expenseCategories = $this->expenseCategory->paginate('10');
-
+    public function index() {
+        $expenseCategories = auth('api')->user()->expenseCategory()->paginate('10');
         return response()->json(['data' => $expenseCategories], 200);
     }
 
 
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $data = $request->all();
 
         try {
+            $user_id = auth('api')->user()->id;
+            $data['user_id'] = $user_id;
 
             $expenseCategory = $this->expenseCategory->create($data);
 
@@ -39,8 +37,7 @@ class ExpenseCategoryController extends Controller
     }
 
 
-    public function show(string $id)
-    {
+    public function show(string $id) {
         try {
             $category = $this->expenseCategory->findOrFail($id);
 
@@ -51,17 +48,20 @@ class ExpenseCategoryController extends Controller
     }
 
  
-    public function update(Request $request, string $id)
-    {
+    public function update(Request $request, string $id) {
         $data = $request->all();
 
         try {
 
+            $user_id = auth('api')->user()->id;
             $category = $this->expenseCategory->findOrFail($id);
 
-            $category->update($data);
+            if($user_id == $category['user_id']) {
+                $category->update($data);
+                return response()->json(['data' => $category], 202);
+            }
 
-            return response()->json(['data' => $category], 202);
+            return response()->json(['data' => 'Unauthorized'], 401);
 
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
@@ -69,15 +69,18 @@ class ExpenseCategoryController extends Controller
     }
 
 
-    public function destroy(string $id)
-    {
+    public function destroy(string $id) {
         try {
 
+            $user_id = auth('api')->user()->id;
             $category = $this->expenseCategory->findOrFail($id);
 
-            $category->delete();
+            if($user_id == $category['user_id']) {
+                $category->delete();
+                return response()->json(['data' => 'deleted'], 200);
+            }
 
-            return response()->json(['data' => 'deleted'], 200);
+            return response()->json(['data' => 'Unauthorized'], 401);
 
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
