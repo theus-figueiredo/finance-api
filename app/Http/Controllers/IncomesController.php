@@ -11,10 +11,11 @@ class IncomesController extends Controller
 {
 
     private $income;
-    private $timezone = new DateTimeZone('America/Sao_Paulo');
+    private $timezone;
 
     public function __construct(Incomes $income) {
         $this->income = $income;
+        $this->timezone = new DateTimeZone('America/Sao_Paulo');
     }
 
 
@@ -67,6 +68,12 @@ class IncomesController extends Controller
     public function update(Request $request, string $id) {
 
         $data = $request->all();
+
+        if($request->has('date') || $request->get('date')) {
+            $data['date'] = new DateTime($data['date'], $this->timezone);
+        } else {
+            unset($data['date']);
+        }
 
         try {
 

@@ -11,11 +11,12 @@ class ExpensesController extends Controller
 {
 
     private $expense;
-    private $timezone = new DateTimeZone('America/Sao_Paulo');
+    private $timezone;
 
 
     public function __construct(Expenses $expense) {
         $this->expense = $expense;
+        $this->timezone = new DateTimeZone('America/Sao_Paulo');
     }
 
 
@@ -68,7 +69,7 @@ class ExpensesController extends Controller
     
         $data = $request->all();
 
-        if (!$request->has('date') || $request->get('date')) {
+        if ($request->has('date') || $request->get('date')) {
             $data['date'] = new DateTime($data['date'], $this->timezone);
         } else {
             unset($data['date']);
